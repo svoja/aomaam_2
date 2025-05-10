@@ -30,9 +30,7 @@ export class Start extends Phaser.Scene {
         this.createCatAnimation();
         this.setupAnimationSwitching();
         // Wait for user interaction to play music
-        this.input.once('pointerdown', () => {
-            this.playBackgroundMusic();
-        });        
+        this.playBackgroundMusic();        
         this.setupCloudTextGenerator();
     }
 
