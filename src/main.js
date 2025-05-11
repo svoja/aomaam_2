@@ -1,5 +1,5 @@
+import { Home } from './scenes/Home.js';
 import { Start } from './scenes/Start.js';
-import { StartScreen } from './scenes/StartScreen.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -18,8 +18,8 @@ const config = {
         }
     },
     scene: [
-        StartScreen,
-        Start
+        Start,
+        Home
     ],
     scale: {
         mode: Phaser.Scale.FIT,
