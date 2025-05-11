@@ -23,6 +23,8 @@ export class Home extends Phaser.Scene {
         });
         this.load.audio('bgMusic1', 'assets/audio/TipToe.mp3');
         this.load.audio('bgMusic2', 'assets/audio/Garden.mp3');
+        
+        this.load.audio('catMeow', 'assets/audio/cat_meow.mp3');
     }
 
     create() {
@@ -32,6 +34,10 @@ export class Home extends Phaser.Scene {
         // Wait for user interaction to play music
         this.playBackgroundMusic();        
         this.setupCloudTextGenerator();
+        this.catMeow = this.sound.add('catMeow', {
+            volume: 0.2,
+            loop: false
+        });
     }
 
     playBackgroundMusic() {
@@ -152,10 +158,13 @@ export class Home extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
-        
-        // Optional: Add the ability to click/tap on the cat to change its animation
+
+        // Enable cat to respond to clicks
         this.cat.setInteractive();
-        this.cat.on('pointerdown', () => this.switchCatAnimation());
+        this.cat.on('pointerdown', () => {
+            this.catMeow.play(); // Play cat meow sound
+            this.switchCatAnimation(); // Switch animation
+        });
     }
     
     switchCatAnimation() {
@@ -170,64 +179,6 @@ export class Home extends Phaser.Scene {
         }
     }
 
-    
-    // When the cat is clicked, it will cry
-    catCry() {
-        // Change the animation to 'crying'
-        this.cat.play('idle');
-
-        // Generate a cloud with crying text
-        this.createCustomCatCloud("ร้องไห้แล้ว!");
-    }
-
-    // Helper function to create a cloud with specific text
-    createCustomCatCloud(textContent) {
-        const x = this.cat.x;
-        const y = this.cat.y - 200;
-        
-        const cloud = this.add.image(x, y, 'cloud')
-            .setScale(0.3)
-            .setAlpha(0);
-            
-        const text = this.add.text(x, y, textContent, {
-            fontFamily: 'Arial',
-            fontSize: '34px',
-            color: '#000',
-            align: 'center'
-        }).setOrigin(0.5).setAlpha(0);
-        
-        this.activeCloud = { cloud, text };
-        
-        this.tweens.add({
-            targets: [cloud, text],
-            alpha: 1,
-            duration: 800,
-            ease: 'Power2',
-            onComplete: () => {
-                this.tweens.add({
-                    targets: [cloud, text],
-                    y: y - 20,
-                    duration: 1000,
-                    yoyo: true,
-                    repeat: 1,
-                    ease: 'Sine.easeInOut'
-                });
-                
-                this.tweens.add({
-                    targets: [cloud, text],
-                    alpha: 0,
-                    delay: 3000,
-                    duration: 800,
-                    onComplete: () => {
-                        cloud.destroy();
-                        text.destroy();
-                        this.activeCloud = null;
-                    }
-                });
-            }
-        });
-    }
-    
     // Cloud text generator
     setupCloudTextGenerator() {
         // Create cloud text at random intervals
